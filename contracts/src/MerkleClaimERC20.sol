@@ -10,9 +10,9 @@ import { MerkleProof } from "https://github.com/OpenZeppelin/openzeppelin-contra
 /// @notice ERC20 claimable by members of a merkle tree
 /// @author Anish Agnihotri <contact@anishagnihotri.com>
 /// @dev Solmate ERC20 includes unused _burn logic that can be removed to optimize deployment cost
+/// @changes added multiple vesting phases - JIN
 contract MerkleClaimERC20 is ERC20 {
 
-  // @todo rename 2,3,4 etc. two three four
 
   /// ============ Immutable storage ============
 
@@ -30,11 +30,11 @@ contract MerkleClaimERC20 is ERC20 {
   /// ============ Mutable storage ============
 
   /// @notice Mapping of addresses who have claimed tokens
-  mapping(address => bool) public hasClaimed; // 10%  
+  mapping(address => bool) public hasClaimed; // 10% 
   mapping(address => bool) public hasClaimed2; // 20%  
-  mapping(address => bool) public hasClaimed3; // 20% 
-  mapping(address => bool) public hasClaimed4; // 25% 
-  mapping(address => bool) public hasClaimed5; // 25% 
+  mapping(address => bool) public hasClaimed3; // 20%  
+  mapping(address => bool) public hasClaimed4; // 25%  
+  mapping(address => bool) public hasClaimed5; // 25%  
 
 
 
@@ -61,8 +61,7 @@ contract MerkleClaimERC20 is ERC20 {
     bytes32 _merkleRoot
   ) ERC20(_name, _symbol, _decimals) {
     merkleRoot = _merkleRoot; // Update root
-      
-    // used for testing over the course of 10 hours. Can be changed to desired vested lengths
+
     releaseTime = block.timestamp;
     releaseTime2 = block.timestamp + 1 * (30 minutes);
     releaseTime3 = block.timestamp + 1 * (2 hours);
@@ -109,7 +108,7 @@ contract MerkleClaimERC20 is ERC20 {
     emit Claim(to, phaseAmount);
   }
 
-    // Second claim function
+    // Second claim - 20% after 3 months
     function claim2(address to, uint256 amount, bytes32[] calldata proof) external {
     // Throw if address has already claimed tokens
     if (hasClaimed2[to]) revert AlreadyClaimed();
@@ -132,8 +131,7 @@ contract MerkleClaimERC20 is ERC20 {
     // Emit claim event
     emit Claim2(to, phaseAmount);
   }
-  
-  // claim 3
+
   function claim3(address to, uint256 amount, bytes32[] calldata proof) external {
     // Throw if address has already claimed tokens
     if (hasClaimed3[to]) revert AlreadyClaimed();
@@ -157,7 +155,7 @@ contract MerkleClaimERC20 is ERC20 {
     emit Claim3(to, phaseAmount);
   }
 
-  // claim 4
+  // claim phase 4 25% after 
   function claim4(address to, uint256 amount, bytes32[] calldata proof) external {
     // Throw if address has already claimed tokens
     if (hasClaimed4[to]) revert AlreadyClaimed();
@@ -181,7 +179,7 @@ contract MerkleClaimERC20 is ERC20 {
     emit Claim4(to, phaseAmount);
   }
 
-  // Final claim
+  // Final claim phase 25% after 2 years
   function claim5(address to, uint256 amount, bytes32[] calldata proof) external {
     // Throw if address has already claimed tokens
     if (hasClaimed5[to]) revert AlreadyClaimed();
