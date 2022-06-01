@@ -30,11 +30,11 @@ contract MerkleClaimERC20 is ERC20 {
   /// ============ Mutable storage ============
 
   /// @notice Mapping of addresses who have claimed tokens
-  mapping(address => bool) public hasClaimed; // 10%  first day
-  mapping(address => bool) public hasClaimed2; // 20%  3 months
-  mapping(address => bool) public hasClaimed3; // 20%  6 months
-  mapping(address => bool) public hasClaimed4; // 25%  1 years
-  mapping(address => bool) public hasClaimed5; // 25%  2 years
+  mapping(address => bool) public hasClaimed; // 10%  
+  mapping(address => bool) public hasClaimed2; // 20%  
+  mapping(address => bool) public hasClaimed3; // 20% 
+  mapping(address => bool) public hasClaimed4; // 25% 
+  mapping(address => bool) public hasClaimed5; // 25% 
 
 
 
@@ -61,7 +61,8 @@ contract MerkleClaimERC20 is ERC20 {
     bytes32 _merkleRoot
   ) ERC20(_name, _symbol, _decimals) {
     merkleRoot = _merkleRoot; // Update root
-
+      
+    // used for testing over the course of 10 hours. Can be changed to desired vested lengths
     releaseTime = block.timestamp;
     releaseTime2 = block.timestamp + 1 * (30 minutes);
     releaseTime3 = block.timestamp + 1 * (2 hours);
@@ -108,7 +109,7 @@ contract MerkleClaimERC20 is ERC20 {
     emit Claim(to, phaseAmount);
   }
 
-    // Second claim - 20% after 3 months
+    // Second claim function
     function claim2(address to, uint256 amount, bytes32[] calldata proof) external {
     // Throw if address has already claimed tokens
     if (hasClaimed2[to]) revert AlreadyClaimed();
@@ -131,7 +132,8 @@ contract MerkleClaimERC20 is ERC20 {
     // Emit claim event
     emit Claim2(to, phaseAmount);
   }
-
+  
+  // claim 3
   function claim3(address to, uint256 amount, bytes32[] calldata proof) external {
     // Throw if address has already claimed tokens
     if (hasClaimed3[to]) revert AlreadyClaimed();
@@ -155,7 +157,7 @@ contract MerkleClaimERC20 is ERC20 {
     emit Claim3(to, phaseAmount);
   }
 
-  // claim phase 4 25% after 
+  // claim 4
   function claim4(address to, uint256 amount, bytes32[] calldata proof) external {
     // Throw if address has already claimed tokens
     if (hasClaimed4[to]) revert AlreadyClaimed();
@@ -179,7 +181,7 @@ contract MerkleClaimERC20 is ERC20 {
     emit Claim4(to, phaseAmount);
   }
 
-  // Final claim phase 25% after 2 years
+  // Final claim
   function claim5(address to, uint256 amount, bytes32[] calldata proof) external {
     // Throw if address has already claimed tokens
     if (hasClaimed5[to]) revert AlreadyClaimed();
